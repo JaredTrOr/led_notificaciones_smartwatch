@@ -1,7 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:weartest/api/mongodb_api.dart';
 import 'package:weartest/main.dart';
 
 class FirebaseApi {
+
+  final _mongodbapi = MongoDBAPI();
 
   // Create an instance of Firebase Messaging
   final _firebaseMessaging = FirebaseMessaging.instance;
@@ -10,6 +13,7 @@ class FirebaseApi {
   Future <void> initNotifications() async {
     // Request permission from user 
     await _firebaseMessaging.requestPermission();
+    _firebaseMessaging.subscribeToTopic('led');
 
     // Fetch the FCM (Fire Cloud Messaging) token for the device
     final FCMToken = await _firebaseMessaging.getToken();
@@ -20,14 +24,19 @@ class FirebaseApi {
   }
 
   // Function to handle received messages
-  void handleMessage(RemoteMessage? message) {
+  void handleMessage(RemoteMessage? message) async {
 
     if (message == null) return;
 
-    navigatorKey.currentState?.pushNamed(
-      '/notification_page',
-      arguments: message
-    );
+    try {
+      await _mongodbapi.saveNotificationMongoDB(message);
+
+    } catch(e) {
+      print('ERROR AL GUARDAR');
+      print(e);
+    }
+
+    navigatorKey.currentState?.pushNamed('/home_page');
   }
 
   // Function to initialize foreground and background settings
@@ -38,5 +47,9 @@ class FirebaseApi {
 
     // Attach event listeners fot when a notification opens the app
     FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+
+    //Actualizar cuando llegan los mensajes
+    FirebaseMessaging.onMessage.listen(handleMessage);
+
   }
 }

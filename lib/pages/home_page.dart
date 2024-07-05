@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wear/wear.dart';
+import 'package:weartest/pages/list_notification_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -10,22 +11,7 @@ class HomePage extends StatelessWidget {
       builder: (context, shape, child) {
         return AmbientMode(
           builder: (context, mode, child) {
-            return const Scaffold(
-                backgroundColor: Colors.white,
-                body: SafeArea(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FlutterLogo(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: Text('Notificaciones'),
-                      )
-                    ],
-                  ),
-                ));
+            return ListNotificationPage();
           },
         );
       },

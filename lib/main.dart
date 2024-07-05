@@ -7,7 +7,7 @@ import 'package:weartest/pages/notification_page.dart';
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseApi().initNotifications();
   runApp(const MyApp());
@@ -16,7 +16,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,12 +24,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.compact,
       ),
-      home: const HomePage(),
+      // Define initialRoute as '/', and add 'home_page' to routes
+      initialRoute: '/',
       navigatorKey: navigatorKey,
       routes: {
-        '/notification_page': (context) => const NotificationPage()
+        '/': (context) => const HomePage(),
+        '/home_page': (context) => const HomePage(),
+        '/notification_page': (context) => const NotificationPage(),
       },
     );
   }
 }
-

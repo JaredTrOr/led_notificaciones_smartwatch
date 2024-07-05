@@ -1,8 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:wear/wear.dart';
-import 'package:weartest/widgets/counter_page.dart';
+import 'package:weartest/api/firebase_api.dart';
+import 'package:weartest/pages/home_page.dart';
+import 'package:weartest/pages/notification_page.dart';
 
-void main() {
+final navigatorKey = GlobalKey<NavigatorState>();
+
+void main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await FirebaseApi().initNotifications();
   runApp(const MyApp());
 }
 
@@ -18,53 +25,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.compact,
       ),
-      home: const WatchScreen(),
-    );
-  }
-}
-
-class WatchScreen extends StatelessWidget {
-  const WatchScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return WatchShape(
-      builder: (context, shape, child) {
-        return AmbientMode(
-          builder: (context, mode, child) {
-            return const CounterPage();
-          },
-        );
+      home: const HomePage(),
+      navigatorKey: navigatorKey,
+      routes: {
+        '/notification_page': (context) => const NotificationPage()
       },
     );
   }
 }
 
-class Counter extends StatefulWidget {
-  final WearMode mode;
-  const Counter(this.mode, {super.key});
-
-  @override
-  State<Counter> createState() => _CounterState();
-}
-
-class _CounterState extends State<Counter> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: widget.mode == WearMode.active ? Colors.white : Colors.black,
-      body: const SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FlutterLogo(),
-            SizedBox(height: 10,),
-            Center(
-              child: Text('Hola mundo wear'),
-            )
-          ],
-        ),
-      )
-    );
-  }
-}
